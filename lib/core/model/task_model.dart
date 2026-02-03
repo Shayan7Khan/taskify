@@ -12,6 +12,17 @@ class TaskModel {
     required this.description,
     required this.isCompleted,
     required this.time,
-    required this.priority
+    required this.priority,
   });
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      isCompleted: json['isCompleted'],
+      time: json['time'],
+      priority: json['priority'],
+    );
+  }
 }

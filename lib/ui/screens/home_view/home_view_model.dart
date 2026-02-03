@@ -10,10 +10,12 @@ class HomeViewModel extends BaseViewModel {
     getTasks();
   }
 
-  getTasks() {
+  List<TaskModel> getTasks() {
     setState(ViewState.busy);
-    tasks = DummyTasks.dummyTasks;
+    final response = DummyTasks.dummyTasks;
+    tasks = response.map((json) => TaskModel.fromJson(json)).toList();
     setState(ViewState.idle);
+    return tasks;
   }
 
   toggleIsCompleted(task) {

@@ -1,15 +1,22 @@
 import 'package:go_router/go_router.dart';
 import 'package:taskify/ui/screens/auth/login/login_view.dart';
 import 'package:taskify/ui/screens/auth/signup/signup_view.dart';
-import 'package:taskify/ui/screens/home_view/home_view.dart';
+import 'package:taskify/ui/screens/home/home_view.dart';
 import 'package:taskify/ui/screens/onboarding/onboarding_view.dart';
+import 'package:taskify/ui/screens/splash/splash_view.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/onboarding',
+  initialLocation: '/splash',
   routes: [
     GoRoute(
+      path: '/splash',
+      name: 'splash',
+      builder: (context, state) => SplashView(),
+    ),
+    
+    GoRoute(
       path: '/onboarding',
-      name: 'onboardig',
+      name: 'onboarding',
       builder: (context, state) => OnboardingView(),
     ),
 
@@ -22,7 +29,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/signup',
       name: 'signup',
-      builder: (context, state) => SignupView(),
+      builder: (context, state) => SignUpView(),
     ),
 
     GoRoute(

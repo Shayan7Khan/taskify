@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:taskify/ui/screens/home_view/home_view_model.dart';
+import 'package:taskify/ui/screens/home/home_view_model.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -30,7 +30,7 @@ class HomeView extends StatelessWidget {
 
   Widget header() {
     return Container(
-      height: 250.h,
+      height: 220.h,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Color(0xFF55847A),

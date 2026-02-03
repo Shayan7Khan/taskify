@@ -40,6 +40,6 @@ class OnboardingViewModel extends BaseViewModel {
   }
 
   void goToSignUpButton(BuildContext context) {
-    context.goNamed('home');
+    context.goNamed('signup');
   }
 }

@@ -59,7 +59,6 @@ class OnboardingView extends StatelessWidget {
                         child: CustomElevatedButton(
                           title: 'Get Started',
                           onPressed: ()  {
-                          
                             model.goToSignUpButton(context);
                           },
                         ),

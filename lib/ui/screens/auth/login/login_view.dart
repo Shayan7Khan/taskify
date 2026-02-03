@@ -33,21 +33,7 @@ class LoginView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        40.verticalSpace,
-
-                        // Back button
-                        AnimatedOpacity(
-                          opacity: model.backButtonOpacity,
-                          duration: const Duration(milliseconds: 300),
-                          child: IconButton(
-                            onPressed: () => model.goBack(context),
-                            icon: const Icon(Icons.arrow_back_ios),
-                            color: const Color(0xFF4C766E),
-                          ),
-                        ),
-
-                        20.verticalSpace,
-
+                        60.verticalSpace,
                         // Header
                         AnimatedSlide(
                           offset: model.headerOffset,

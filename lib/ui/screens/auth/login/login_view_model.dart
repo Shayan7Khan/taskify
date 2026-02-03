@@ -219,9 +219,7 @@ class LoginViewModel extends BaseViewModel {
     debugPrint('Navigate to Sign Up');
   }
 
-  void goBack(BuildContext context) {
-    context.pop();
-  }
+  
 
   @override
   void dispose() {

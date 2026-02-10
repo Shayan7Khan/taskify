@@ -14,7 +14,7 @@ class DummyTasks {
       'description': 'description of task 2',
       'isCompleted': false,
       'time': '12:00',
-      'priority': 'high',
+      'priority': 'medium',
     },
     {
       'id': 3,
@@ -22,7 +22,7 @@ class DummyTasks {
       'description': 'description of task 3',
       'isCompleted': true,
       'time': '12:00',
-      'priority': 'high',
+      'priority': 'low',
     },
     {
       'id': 4,

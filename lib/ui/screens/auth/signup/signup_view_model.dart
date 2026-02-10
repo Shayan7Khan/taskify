@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/strings/app_strings.dart';
 
 class SignUpViewModel extends BaseViewModel {
   final BuildContext context;
 
+  // Form key
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   // Text controllers
-  final GlobalKey _formkey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -39,10 +42,6 @@ class SignUpViewModel extends BaseViewModel {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _acceptedTerms = false;
-  String? _nameError;
-  String? _emailError;
-  String? _passwordError;
-  String? _confirmPasswordError;
   String? _termsError;
 
   // Getters
@@ -69,13 +68,7 @@ class SignUpViewModel extends BaseViewModel {
   bool get obscurePassword => _obscurePassword;
   bool get obscureConfirmPassword => _obscureConfirmPassword;
   bool get acceptedTerms => _acceptedTerms;
-  String? get nameError => _nameError;
-  String? get emailError => _emailError;
-  String? get passwordError => _passwordError;
-  String? get confirmPasswordError => _confirmPasswordError;
   String? get termsError => _termsError;
-
-  GlobalKey get formKey => _formkey;
 
   SignUpViewModel(this.context) {
     _startAnimations();
@@ -165,85 +158,68 @@ class SignUpViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  bool _validateName(String name) {
-    if (name.isEmpty) {
-      _nameError = 'Name is required';
-      return false;
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredName;
     }
 
-    if (name.length < 2) {
-      _nameError = 'Name must be at least 2 characters';
-      return false;
+    if (value.length < 2) {
+      return AppStrings.invalidName;
     }
 
-    _nameError = null;
-    return true;
+    return null;
   }
 
-  bool _validateEmail(String email) {
-    if (email.isEmpty) {
-      _emailError = 'Email is required';
-      return false;
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredEmail;
     }
 
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-
-    if (!emailRegex.hasMatch(email)) {
-      _emailError = 'Enter a valid email';
-      return false;
+    if (!RegExp(AppStrings.emailRegex).hasMatch(value)) {
+      return AppStrings.invalidEmail;
     }
 
-    _emailError = null;
-    return true;
+    return null;
   }
 
-  bool _validatePassword(String password) {
-    if (password.isEmpty) {
-      _passwordError = 'Password is required';
-      return false;
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredPassword;
     }
 
-    if (password.length < 8) {
-      _passwordError = 'Password must be at least 8 characters';
-      return false;
+    if (value.length < 8) {
+      return AppStrings.invalidPassword;
     }
 
     // Check for at least one uppercase letter
-    if (!password.contains(RegExp(r'[A-Z]'))) {
-      _passwordError = 'Password must contain at least one uppercase letter';
-      return false;
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      return AppStrings.passwordUppercaseRequired;
     }
 
     // Check for at least one number
-    if (!password.contains(RegExp(r'[0-9]'))) {
-      _passwordError = 'Password must contain at least one number';
-      return false;
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      return AppStrings.passwordNumberRequired;
     }
 
-    _passwordError = null;
-    return true;
+    return null;
   }
 
-  bool _validateConfirmPassword(String password, String confirmPassword) {
-    if (confirmPassword.isEmpty) {
-      _confirmPasswordError = 'Please confirm your password';
-      return false;
+  String? validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredConfirmPassword;
     }
 
-    if (password != confirmPassword) {
-      _confirmPasswordError = 'Passwords do not match';
-      return false;
+    if (passwordController.text != value) {
+      return AppStrings.passwordMismatch;
     }
 
-    _confirmPasswordError = null;
-    return true;
+    return null;
   }
 
-  bool _validateTerms() {
+  bool validateTerms() {
     if (!_acceptedTerms) {
-      _termsError = 'You must accept the terms and conditions';
+      _termsError = AppStrings.termsRequired;
+      notifyListeners();
       return false;
     }
 
@@ -252,30 +228,16 @@ class SignUpViewModel extends BaseViewModel {
   }
 
   Future<void> signUp() async {
-    // Clear previous errors
-    _nameError = null;
-    _emailError = null;
-    _passwordError = null;
-    _confirmPasswordError = null;
+    // Clear terms error
     _termsError = null;
-    notifyListeners();
 
-    // Validate inputs
-    final isNameValid = _validateName(nameController.text);
-    final isEmailValid = _validateEmail(emailController.text);
-    final isPasswordValid = _validatePassword(passwordController.text);
-    final isConfirmPasswordValid = _validateConfirmPassword(
-      passwordController.text,
-      confirmPasswordController.text,
-    );
-    final isTermsValid = _validateTerms();
+    // Validate form
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
 
-    if (!isNameValid ||
-        !isEmailValid ||
-        !isPasswordValid ||
-        !isConfirmPasswordValid ||
-        !isTermsValid) {
-      notifyListeners();
+    // Validate terms separately (since it's not a TextFormField)
+    if (!validateTerms()) {
       return;
     }
 
@@ -300,30 +262,37 @@ class SignUpViewModel extends BaseViewModel {
       // or
       // context.goNamed('email-verification');
 
-      debugPrint('Sign up successful!');
+      debugPrint(AppStrings.signUpSuccess);
 
       setState(ViewState.idle);
     } catch (e) {
       // Handle signup error
-      _emailError = 'This email is already registered';
       debugPrint('Sign up error: $e');
       setState(ViewState.idle);
-      notifyListeners();
+
+      // Show error message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppStrings.signUpError),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   void signUpWithGoogle() {
     // TODO: Implement Google Sign-In
-    debugPrint('Sign up with Google');
+    debugPrint('Sign up with ${AppStrings.google}');
   }
 
   void signUpWithApple() {
     // TODO: Implement Apple Sign-In
-    debugPrint('Sign up with Apple');
+    debugPrint('Sign up with ${AppStrings.apple}');
   }
 
   void goToLogin(BuildContext context) {
-    // TODO: Navigate to login screen
     context.goNamed('login');
   }
 

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// ignore: must_be_immutable
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
   final bool obscureText;
-  TextInputType? keyboardType;
-  String? errorText;
-  Widget? suffixIcon;
-  CustomTextFormField({
+  final TextInputType? keyboardType;
+  final String? errorText;
+  final Widget? suffixIcon;
+  final String? Function(String?)? validator;
+
+  const CustomTextFormField({
     super.key,
     required this.controller,
     required this.label,
@@ -19,6 +20,7 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType,
     this.errorText,
     this.suffixIcon,
+    this.validator,
   });
 
   @override
@@ -35,10 +37,11 @@ class CustomTextFormField extends StatelessWidget {
           ),
         ),
         8.verticalSpace,
-        TextField(
+        TextFormField(
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
+          validator: validator,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey[400]),
@@ -61,6 +64,10 @@ class CustomTextFormField extends StatelessWidget {
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Colors.red, width: 1),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: const BorderSide(color: Colors.red, width: 2),
             ),
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16.w,

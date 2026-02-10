@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/strings/app_strings.dart';
 
 class LoginViewModel extends BaseViewModel {
   final BuildContext context;
+
+  // Form key
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   // Text controllers
   final TextEditingController emailController = TextEditingController();
@@ -29,8 +33,6 @@ class LoginViewModel extends BaseViewModel {
 
   // Form states
   bool _obscurePassword = true;
-  String? _emailError;
-  String? _passwordError;
 
   // Getters
   double get bubbleScale => _bubbleScale;
@@ -50,8 +52,6 @@ class LoginViewModel extends BaseViewModel {
   Offset get socialButtonsOffset => _socialButtonsOffset;
 
   bool get obscurePassword => _obscurePassword;
-  String? get emailError => _emailError;
-  String? get passwordError => _passwordError;
 
   LoginViewModel(this.context) {
     _startAnimations();
@@ -118,52 +118,33 @@ class LoginViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  bool _validateEmail(String email) {
-    if (email.isEmpty) {
-      _emailError = 'Email is required';
-      return false;
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredEmail;
     }
 
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-
-    if (!emailRegex.hasMatch(email)) {
-      _emailError = 'Enter a valid email';
-      return false;
+    if (!RegExp(AppStrings.emailRegex).hasMatch(value)) {
+      return AppStrings.invalidEmail;
     }
 
-    _emailError = null;
-    return true;
+    return null;
   }
 
-  bool _validatePassword(String password) {
-    if (password.isEmpty) {
-      _passwordError = 'Password is required';
-      return false;
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredPassword;
     }
 
-    if (password.length < 6) {
-      _passwordError = 'Password must be at least 6 characters';
-      return false;
+    if (value.length < 6) {
+      return AppStrings.invalidPassword;
     }
 
-    _passwordError = null;
-    return true;
+    return null;
   }
 
   Future<void> login() async {
-    // Clear previous errors
-    _emailError = null;
-    _passwordError = null;
-    notifyListeners();
-
-    // Validate inputs
-    final isEmailValid = _validateEmail(emailController.text);
-    final isPasswordValid = _validatePassword(passwordController.text);
-
-    if (!isEmailValid || !isPasswordValid) {
-      notifyListeners();
+    // Validate form
+    if (!formKey.currentState!.validate()) {
       return;
     }
 
@@ -185,26 +166,34 @@ class LoginViewModel extends BaseViewModel {
       // TODO: Update with your actual navigation
       context.goNamed('home');
 
-      debugPrint('Login successful!');
+      debugPrint(AppStrings.loginSuccess);
 
       setState(ViewState.idle);
     } catch (e) {
       // Handle login error
-      _passwordError = 'Invalid email or password';
       debugPrint('Login error: $e');
       setState(ViewState.idle);
-      notifyListeners();
+
+      // Show error message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppStrings.loginError),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   void loginWithGoogle() {
     // TODO: Implement Google Sign-In
-    debugPrint('Login with Google');
+    debugPrint('Login with ${AppStrings.google}');
   }
 
   void loginWithApple() {
     // TODO: Implement Apple Sign-In
-    debugPrint('Login with Apple');
+    debugPrint('Login with ${AppStrings.apple}');
   }
 
   void goToForgotPassword() {
@@ -214,12 +203,9 @@ class LoginViewModel extends BaseViewModel {
   }
 
   void goToSignUp(BuildContext context) {
-    // TODO: Navigate to signup screen
     context.goNamed('signup');
     debugPrint('Navigate to Sign Up');
   }
-
-  
 
   @override
   void dispose() {

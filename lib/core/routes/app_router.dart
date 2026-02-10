@@ -6,7 +6,7 @@ import 'package:taskify/ui/screens/onboarding/onboarding_view.dart';
 import 'package:taskify/ui/screens/splash/splash_view.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: '/signup',
   routes: [
     GoRoute(
       path: '/splash',

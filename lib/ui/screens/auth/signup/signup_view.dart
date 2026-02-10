@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/strings/app_strings.dart';
 import 'package:taskify/ui/custom_widgets/custom_elevated_button.dart';
 import 'package:taskify/ui/screens/auth/auth_custom_widgets/custom_text_form_field.dart';
 import 'package:taskify/ui/custom_widgets/custom_top_bar_bubble.dart';
@@ -12,7 +13,6 @@ class SignUpView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return ChangeNotifierProvider(
       create: (context) => SignUpViewModel(context),
       child: Consumer<SignUpViewModel>(
@@ -49,7 +49,7 @@ class SignUpView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Create Account',
+                                      AppStrings.createAccount,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 32.sp,
@@ -58,7 +58,7 @@ class SignUpView extends StatelessWidget {
                                     ),
                                     8.verticalSpace,
                                     Text(
-                                      'Sign up to start organizing your tasks',
+                                      AppStrings.signUpSubtitle,
                                       style: TextStyle(
                                         fontSize: 15.sp,
                                         color: Colors.grey[600],
@@ -80,15 +80,15 @@ class SignUpView extends StatelessWidget {
                               duration: const Duration(milliseconds: 400),
                               child: CustomTextFormField(
                                 controller: model.nameController,
-                                label: 'Full Name',
-                                hint: 'Enter your full name',
-                                errorText: model.nameError,
+                                label: AppStrings.fullName,
+                                hint: AppStrings.enterFullName,
+                                validator: model.validateName,
                               ),
                             ),
                           ),
-                      
+
                           20.verticalSpace,
-                      
+
                           // Email field
                           AnimatedSlide(
                             offset: model.emailFieldOffset,
@@ -99,16 +99,16 @@ class SignUpView extends StatelessWidget {
                               duration: const Duration(milliseconds: 400),
                               child: CustomTextFormField(
                                 controller: model.emailController,
-                                label: 'Email',
-                                hint: 'Enter your email',
+                                label: AppStrings.email,
+                                hint: AppStrings.enterEmail,
                                 keyboardType: TextInputType.emailAddress,
-                                errorText: model.emailError,
+                                validator: model.validateEmail,
                               ),
                             ),
                           ),
-                      
+
                           20.verticalSpace,
-                      
+
                           // Password field
                           AnimatedSlide(
                             offset: model.passwordFieldOffset,
@@ -119,10 +119,10 @@ class SignUpView extends StatelessWidget {
                               duration: const Duration(milliseconds: 400),
                               child: CustomTextFormField(
                                 controller: model.passwordController,
-                                label: 'Password',
-                                hint: 'Create a password',
+                                label: AppStrings.password,
+                                hint: AppStrings.createPassword,
                                 obscureText: model.obscurePassword,
-                                errorText: model.passwordError,
+                                validator: model.validatePassword,
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     model.obscurePassword
@@ -135,9 +135,9 @@ class SignUpView extends StatelessWidget {
                               ),
                             ),
                           ),
-                      
+
                           20.verticalSpace,
-                      
+
                           // Confirm Password field
                           AnimatedSlide(
                             offset: model.confirmPasswordFieldOffset,
@@ -148,10 +148,10 @@ class SignUpView extends StatelessWidget {
                               duration: const Duration(milliseconds: 400),
                               child: CustomTextFormField(
                                 controller: model.confirmPasswordController,
-                                label: 'Confirm Password',
-                                hint: 'Re-enter your password',
+                                label: AppStrings.confirmPassword,
+                                hint: AppStrings.reEnterPassword,
                                 obscureText: model.obscureConfirmPassword,
-                                errorText: model.confirmPasswordError,
+                                validator: model.validateConfirmPassword,
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     model.obscureConfirmPassword
@@ -165,9 +165,9 @@ class SignUpView extends StatelessWidget {
                               ),
                             ),
                           ),
-                      
+
                           20.verticalSpace,
-                      
+
                           // Terms and conditions checkbox
                           AnimatedOpacity(
                             opacity: model.termsOpacity,
@@ -192,19 +192,21 @@ class SignUpView extends StatelessWidget {
                                           color: Colors.grey[600],
                                         ),
                                         children: [
-                                          const TextSpan(text: 'I agree to the '),
                                           TextSpan(
-                                            text: 'Terms & Conditions',
-                                            style: TextStyle(
-                                              color: const Color(0xFF4C766E),
+                                            text: AppStrings.termsAgreement,
+                                          ),
+                                          TextSpan(
+                                            text: AppStrings.termsAndConditions,
+                                            style: const TextStyle(
+                                              color: Color(0xFF4C766E),
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                          const TextSpan(text: ' and '),
+                                          TextSpan(text: AppStrings.and),
                                           TextSpan(
-                                            text: 'Privacy Policy',
-                                            style: TextStyle(
-                                              color: const Color(0xFF4C766E),
+                                            text: AppStrings.privacyPolicy,
+                                            style: const TextStyle(
+                                              color: Color(0xFF4C766E),
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -216,7 +218,7 @@ class SignUpView extends StatelessWidget {
                               ],
                             ),
                           ),
-                      
+
                           if (model.termsError != null)
                             Padding(
                               padding: EdgeInsets.only(left: 16.w),
@@ -228,9 +230,9 @@ class SignUpView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                      
+
                           30.verticalSpace,
-                      
+
                           // Sign up button
                           Center(
                             child: AnimatedScale(
@@ -239,17 +241,17 @@ class SignUpView extends StatelessWidget {
                               curve: Curves.easeOutBack,
                               child: CustomElevatedButton(
                                 title: model.state == ViewState.busy
-                                    ? 'Creating Account...'
-                                    : 'Sign Up',
+                                    ? AppStrings.creatingAccount
+                                    : AppStrings.signUp,
                                 onPressed: model.state == ViewState.busy
                                     ? null
                                     : () => model.signUp(),
                               ),
                             ),
                           ),
-                      
+
                           30.verticalSpace,
-                      
+
                           // Divider with "OR"
                           AnimatedOpacity(
                             opacity: model.dividerOpacity,
@@ -263,9 +265,11 @@ class SignUpView extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                  ),
                                   child: Text(
-                                    'OR',
+                                    AppStrings.orDivider,
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                       fontSize: 14.sp,
@@ -282,9 +286,9 @@ class SignUpView extends StatelessWidget {
                               ],
                             ),
                           ),
-                      
+
                           30.verticalSpace,
-                      
+
                           // Social signup buttons
                           AnimatedSlide(
                             offset: model.socialButtonsOffset,
@@ -298,7 +302,7 @@ class SignUpView extends StatelessWidget {
                                   Expanded(
                                     child: _buildSocialButton(
                                       icon: Icons.g_mobiledata_rounded,
-                                      label: 'Google',
+                                      label: AppStrings.google,
                                       onPressed: model.signUpWithGoogle,
                                     ),
                                   ),
@@ -306,7 +310,7 @@ class SignUpView extends StatelessWidget {
                                   Expanded(
                                     child: _buildSocialButton(
                                       icon: Icons.apple,
-                                      label: 'Apple',
+                                      label: AppStrings.apple,
                                       onPressed: model.signUpWithApple,
                                     ),
                                   ),
@@ -314,9 +318,7 @@ class SignUpView extends StatelessWidget {
                               ),
                             ),
                           ),
-                      
                           40.verticalSpace,
-                      
                           // Login redirect
                           AnimatedOpacity(
                             opacity: model.loginRedirectOpacity,
@@ -325,7 +327,7 @@ class SignUpView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Already have an account? ',
+                                  AppStrings.alreadyHaveAccount,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.grey[600],
@@ -334,7 +336,7 @@ class SignUpView extends StatelessWidget {
                                 GestureDetector(
                                   onTap: () => model.goToLogin(context),
                                   child: Text(
-                                    'Login',
+                                    AppStrings.login,
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: const Color(0xFF4C766E),
@@ -345,7 +347,6 @@ class SignUpView extends StatelessWidget {
                               ],
                             ),
                           ),
-                      
                           40.verticalSpace,
                         ],
                       ),

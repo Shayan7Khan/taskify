@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/services/auth_service.dart';
 import 'package:taskify/core/strings/app_strings.dart';
+import 'package:taskify/locator.dart';
 
 class LoginViewModel extends BaseViewModel {
   final BuildContext context;
 
+  final AuthService _authService = locator<AuthService>();
   // Form key
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -143,46 +146,27 @@ class LoginViewModel extends BaseViewModel {
   }
 
   Future<void> login() async {
-    // Validate form
     if (!formKey.currentState!.validate()) {
       return;
     }
-
-    // Start loading
     setState(ViewState.busy);
-
-    try {
-      // TODO: Implement your actual login logic here
-      // Example:
-      // await authService.login(
-      //   email: emailController.text,
-      //   password: passwordController.text,
-      // );
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Navigate to home screen
-      // TODO: Update with your actual navigation
-      context.goNamed('home');
-
+    bool success = await _authService.logIn(
+      emailController.text,
+      passwordController.text,
+    );
+    setState(ViewState.idle);
+    if (!context.mounted) return;
+    if (success) {
       debugPrint(AppStrings.loginSuccess);
-
-      setState(ViewState.idle);
-    } catch (e) {
-      // Handle login error
-      debugPrint('Login error: $e');
-      setState(ViewState.idle);
-
-      // Show error message
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(AppStrings.loginError),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      context.goNamed('home');
+    } else {
+      debugPrint('Login failed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(AppStrings.loginError),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

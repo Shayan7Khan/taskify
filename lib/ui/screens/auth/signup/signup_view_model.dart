@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/services/auth_service.dart';
 import 'package:taskify/core/strings/app_strings.dart';
+import 'package:taskify/locator.dart';
 
 class SignUpViewModel extends BaseViewModel {
   final BuildContext context;
 
+  final AuthService _authService = locator<AuthService>();
   // Form key
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -228,57 +231,32 @@ class SignUpViewModel extends BaseViewModel {
   }
 
   Future<void> signUp() async {
-    // Clear terms error
     _termsError = null;
-
-    // Validate form
     if (!formKey.currentState!.validate()) {
       return;
     }
-
-    // Validate terms separately (since it's not a TextFormField)
     if (!validateTerms()) {
       return;
     }
-
-    // Start loading
     setState(ViewState.busy);
-
-    try {
-      // TODO: Implement your actual signup logic here
-      // Example:
-      // await authService.signUp(
-      //   name: nameController.text,
-      //   email: emailController.text,
-      //   password: passwordController.text,
-      // );
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Navigate to home or verification screen
-      // TODO: Update with your actual navigation
-      // context.goNamed('home');
-      // or
-      // context.goNamed('email-verification');
-
+    bool success = await _authService.signUp(
+      emailController.text,
+      passwordController.text,
+      nameController.text,
+    );
+    setState(ViewState.idle);
+    if (!context.mounted) return;
+    if (success) {
       debugPrint(AppStrings.signUpSuccess);
-
-      setState(ViewState.idle);
-    } catch (e) {
-      // Handle signup error
-      debugPrint('Sign up error: $e');
-      setState(ViewState.idle);
-
-      // Show error message
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(AppStrings.signUpError),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      context.goNamed('home');
+    } else {
+      debugPrint('Sign up failed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(AppStrings.signUpError),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

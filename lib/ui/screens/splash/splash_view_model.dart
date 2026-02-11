@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
+import 'package:taskify/core/services/local_storage_service.dart';
+import 'package:taskify/locator.dart';
 
 class SplashViewModel extends BaseViewModel {
   final BuildContext context;
+  final LocalStorageService _localStorageService = locator
+      .get<LocalStorageService>();
 
   // Animation states
   double _iconScale = 0.0;
@@ -14,7 +18,6 @@ class SplashViewModel extends BaseViewModel {
   double _backgroundOpacity = 0.0;
   Offset _textOffset = const Offset(0, 0.5);
   Offset _taglineOffset = const Offset(0, 0.5);
-  
 
   // Getters
   double get iconScale => _iconScale;
@@ -28,6 +31,17 @@ class SplashViewModel extends BaseViewModel {
 
   SplashViewModel(this.context) {
     _startAnimations();
+  }
+
+  Future<void> checkLoginStatus() async {
+    bool isLoggedIn = await _localStorageService.isLoggedIn();
+    if (isLoggedIn) {
+      print('User is logged in, routing to Home');
+      context.goNamed('home');
+    } else {
+       print('User is not logged in, routing to Onboarding');
+      context.goNamed('onboarding');
+    }
   }
 
   void _startAnimations() async {
@@ -61,14 +75,6 @@ class SplashViewModel extends BaseViewModel {
 
     // Navigate to onboarding after total duration
     await Future.delayed(const Duration(milliseconds: 1500));
-    _navigateToOnboarding();
-  }
-
-  void _navigateToOnboarding() {
-    context.goNamed('onboarding');
-
-    debugPrint(
-      'Navigate to Onboarding Screen - Update route name in SplashViewModel',
-    );
+    await checkLoginStatus();
   }
 }

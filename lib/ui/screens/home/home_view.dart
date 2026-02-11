@@ -15,7 +15,7 @@ class HomeView extends StatelessWidget {
           body: SafeArea(
             child: Column(
               children: [
-                header(),
+                header(model, context),
                 10.verticalSpace,
                 text(),
                 7.verticalSpace,
@@ -28,7 +28,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget header() {
+ Widget header(HomeViewModel model, context) {
     return Container(
       height: 220.h,
       width: double.infinity,
@@ -39,23 +39,42 @@ class HomeView extends StatelessWidget {
           bottomRight: Radius.circular(20.r),
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
         children: [
-          Center(
-            child: CircleAvatar(
-              radius: 55.r,
-              backgroundColor: Colors.white,
-              child: Icon(Icons.person, color: Color(0xFF55847A), size: 50.sp),
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  radius: 55.r,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person,
+                    color: Color(0xFF55847A),
+                    size: 50.sp,
+                  ),
+                ),
+              ),
+              30.verticalSpace,
+              Text(
+                'Welcome Shayan',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25.sp,
+                ),
+              ),
+            ],
           ),
-          30.verticalSpace,
-          Text(
-            'Welcome Shayan',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 25.sp,
+          Positioned(
+            top: 10.h,
+            right: 5.w,
+            child: IconButton(
+              onPressed: () {
+                model.logout(context);
+              },
+              icon: Icon(Icons.logout, color: Colors.white, size: 24.sp),
+              tooltip: 'Logout',
             ),
           ),
         ],

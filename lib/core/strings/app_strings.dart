@@ -5,7 +5,6 @@ class AppStrings {
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   static const String passwordRegex = r'^.{8,}$';
 
-
   // Email Validation
   static const String requiredEmail = 'Email is required';
   static const String invalidEmail = 'Enter a valid email';
@@ -31,7 +30,7 @@ class AppStrings {
   static const String termsRequired =
       'You must accept the terms and conditions';
 
-  // Login Screen 
+  // Login Screen
   static const String welcomeBack = 'Welcome Back';
   static const String loginSubtitle =
       'Login to continue your productivity journey';
@@ -40,7 +39,7 @@ class AppStrings {
   static const String forgotPassword = 'Forgot Password?';
   static const String dontHaveAccount = "Don't have an account? ";
 
-  // Sign Up Screen 
+  // Sign Up Screen
   static const String createAccount = 'Create Account';
   static const String signUpSubtitle = 'Sign up to start organizing your tasks';
   static const String signUp = 'Sign Up';
@@ -51,7 +50,7 @@ class AppStrings {
   static const String and = ' and ';
   static const String privacyPolicy = 'Privacy Policy';
 
-  //  Form Fields 
+  //  Form Fields
   static const String fullName = 'Full Name';
   static const String enterFullName = 'Enter your full name';
   static const String email = 'Email';
@@ -67,13 +66,20 @@ class AppStrings {
   static const String google = 'Google';
   static const String apple = 'Apple';
 
-  //  Error Messages 
+  //  Error Messages
   static const String loginError = 'Invalid email or password';
   static const String signUpError = 'This email is already registered';
   static const String networkError = 'Network error. Please try again.';
   static const String genericError = 'Something went wrong. Please try again.';
 
-  //  Success Messages 
+  //  Success Messages
   static const String loginSuccess = 'Login successful!';
   static const String signUpSuccess = 'Sign up successful!';
+
+  //logout
+  static const String logoutTitle = 'Logout';
+  static const String logoutMessage = 'Are you sure you want to logout?';
+  static const String logoutCancel = 'Cancel';
+  static const String logoutSuccess = 'Logged out successfully';
+  static const String logoutError = 'Failed to logout. Please try again.';
 }

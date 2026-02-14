@@ -28,7 +28,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
- Widget header(HomeViewModel model, context) {
+  Widget header(HomeViewModel model, context) {
     return Container(
       height: 220.h,
       width: double.infinity,
@@ -48,16 +48,21 @@ class HomeView extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 55.r,
                   backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    color: Color(0xFF55847A),
-                    size: 50.sp,
-                  ),
+                  backgroundImage: model.profileImageUrl != null
+                      ? NetworkImage(model.profileImageUrl!)
+                      : null,
+                  child: model.profileImageUrl == null
+                      ? Icon(
+                          Icons.person,
+                          color: Color(0xFF55847A),
+                          size: 50.sp,
+                        )
+                      : null,
                 ),
               ),
               30.verticalSpace,
               Text(
-                'Welcome Shayan',
+                'Welcome ${model.userName}',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -159,7 +164,10 @@ class HomeView extends StatelessWidget {
               Expanded(
                 child: Text(
                   task.title,
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               100.horizontalSpace,

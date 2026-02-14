@@ -70,6 +70,59 @@ class SignUpView extends StatelessWidget {
                             ),
                           ),
                           40.verticalSpace,
+                          // Add this after the header, before name field
+                          AnimatedSlide(
+                            offset: model.imagePickerOffset,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeOut,
+                            child: AnimatedOpacity(
+                              opacity: model.imagePickerOpacity,
+                              duration: const Duration(milliseconds: 400),
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () => model.pickProfileImage(context),
+                                  child: Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 60.r,
+                                        backgroundColor: Color(
+                                          0xFF4C766E,
+                                        ).withValues(alpha: 0.1),
+                                        backgroundImage:
+                                            model.profileImage != null
+                                            ? FileImage(model.profileImage!)
+                                            : null,
+                                        child: model.profileImage == null
+                                            ? Icon(
+                                                Icons.person,
+                                                size: 50.sp,
+                                                color: Color(0xFF4C766E),
+                                              )
+                                            : null,
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: EdgeInsets.all(8.w),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF4C766E),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.add,
+                                            size: 20.sp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          40.verticalSpace,
                           // Name field
                           AnimatedSlide(
                             offset: model.nameFieldOffset,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
@@ -36,10 +37,16 @@ class SplashViewModel extends BaseViewModel {
   Future<void> checkLoginStatus() async {
     bool isLoggedIn = await _localStorageService.isLoggedIn();
     if (isLoggedIn) {
-      print('User is logged in, routing to Home');
+      if (kDebugMode) {
+        print('User is logged in, routing to Home');
+      }
+      // ignore: use_build_context_synchronously
       context.goNamed('home');
     } else {
-       print('User is not logged in, routing to Onboarding');
+       if (kDebugMode) {
+         print('User is not logged in, routing to Onboarding');
+       }
+      // ignore: use_build_context_synchronously
       context.goNamed('onboarding');
     }
   }

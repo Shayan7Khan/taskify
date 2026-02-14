@@ -45,14 +45,14 @@ class HomeViewModel extends BaseViewModel {
       final userProfile = UserModel.fromJson(response);
       _userName = userProfile.name;
       _profileImageUrl = userProfile.profileImageUrl;
-     
-
       notifyListeners();
     } catch (e) {
       debugPrint('Error loading profile: $e');
     }
   }
 
+
+  
   List<TaskModel> getTasks() {
     setState(ViewState.busy);
     final response = DummyTasks.dummyTasks;

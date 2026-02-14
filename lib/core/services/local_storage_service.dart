@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
@@ -16,7 +17,9 @@ class LocalStorageService {
     await prefs.setString(keyAccessToken, accessToken);
     await prefs.setString(keyRefreshToken, refreshToken);
     await prefs.setString(keyUserId, userId);
-    print('Session saved successfully. ');
+    if (kDebugMode) {
+      print('Session saved successfully. ');
+    }
   }
 
   //function to get session token
@@ -37,7 +40,9 @@ class LocalStorageService {
     await prefs.remove(keyAccessToken);
     await prefs.remove(keyRefreshToken);
     await prefs.remove(keyUserId);
-    print('Session cleared!');
+    if (kDebugMode) {
+      print('Session cleared!');
+    }
   }
 
   //check if user is logged in

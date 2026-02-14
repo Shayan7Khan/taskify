@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerService {
@@ -19,7 +20,9 @@ class ImagePickerService {
         return File(image.path);
       }
     } catch (e) {
-      print('Error picking image from gallery: $e');
+      if (kDebugMode) {
+        print('Error picking image from gallery: $e');
+      }
     }
     return null;
   }
@@ -38,7 +41,9 @@ class ImagePickerService {
         return File(image.path);
       }
     } catch (e) {
-      print('Error picking image from camera: $e');
+      if (kDebugMode) {
+        print('Error picking image from camera: $e');
+      }
     }
     return null;
   }

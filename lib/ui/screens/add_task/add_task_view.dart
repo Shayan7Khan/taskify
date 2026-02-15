@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/constants/enums/view_state.dart';
 import 'package:taskify/ui/screens/add_task/add_task_view_model.dart';
 import 'package:taskify/ui/custom_widgets/custom_text_form_field.dart';
 import 'package:taskify/ui/custom_widgets/custom_elevated_button.dart';

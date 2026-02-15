@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
-import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/constants/enums/view_state.dart';
 import 'package:taskify/core/services/auth_service.dart';
 import 'package:taskify/core/services/image_picker_service.dart';
 import 'package:taskify/core/services/supabase_storgae_service.dart';
 
-import 'package:taskify/core/strings/app_strings.dart';
+import 'package:taskify/core/constants/strings/app_strings.dart';
 import 'package:taskify/locator.dart';
 import 'package:image_picker/image_picker.dart';
 

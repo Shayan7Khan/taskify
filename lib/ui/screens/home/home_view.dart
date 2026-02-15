@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:taskify/ui/screens/add_task/add_task_view.dart';
 import 'package:taskify/ui/screens/home/home_view_model.dart';
 
 class HomeView extends StatelessWidget {
@@ -12,6 +13,20 @@ class HomeView extends StatelessWidget {
       create: (context) => HomeViewModel(),
       child: Consumer<HomeViewModel>(
         builder: (context, model, child) => Scaffold(
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color(0xFF55847A),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (_) => const AddTaskView(),
+              );
+            },
+            child: const Icon(Icons.add),
+          ),
           body: SafeArea(
             child: Column(
               children: [

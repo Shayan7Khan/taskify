@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:taskify/core/constants/enums.dart';
 import 'package:taskify/core/strings/app_strings.dart';
 import 'package:taskify/ui/custom_widgets/custom_elevated_button.dart';
-import 'package:taskify/ui/screens/auth/auth_custom_widgets/custom_text_form_field.dart';
+import 'package:taskify/ui/custom_widgets/custom_text_form_field.dart';
 import 'package:taskify/ui/custom_widgets/custom_top_bar_bubble.dart';
 import 'package:taskify/ui/screens/auth/signup/signup_view_model.dart';
 

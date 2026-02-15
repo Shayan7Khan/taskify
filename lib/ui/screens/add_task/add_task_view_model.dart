@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
+import 'package:taskify/core/constants/enums/priority.dart';
 import 'package:taskify/core/constants/enums/view_state.dart';
-import 'package:taskify/core/dummy_tasks.dart';
+import 'package:taskify/core/services/database_service.dart';
+import 'package:taskify/locator.dart';
 
 class AddTaskViewModel extends BaseViewModel {
-  // Form key for validation
+  final DatabaseService _taskService = locator<DatabaseService>(); // Add this
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  // Text controllers
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
 
-  String _selectedPriority = 'low';
-  String get selectedPriority => _selectedPriority;
+  Priority _selectedPriority = Priority.low;
+  Priority get selectedPriority => _selectedPriority;
 
-  final List<String> priorities = ['low', 'medium', 'high'];
+  final List<Priority> priorities = Priority.values;
 
-  void setPriority(String priority) {
+  void setPriority(Priority priority) {
     _selectedPriority = priority;
     notifyListeners();
   }
 
-  /// Validate title
   String? validateTitle(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Task title is required';
@@ -34,7 +34,6 @@ class AddTaskViewModel extends BaseViewModel {
     return null;
   }
 
-  /// Validate description
   String? validateDescription(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Description is required';
@@ -45,7 +44,6 @@ class AddTaskViewModel extends BaseViewModel {
     return null;
   }
 
-  /// Validate time
   String? validateTime(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Time is required';
@@ -53,7 +51,6 @@ class AddTaskViewModel extends BaseViewModel {
     return null;
   }
 
-  /// Pick time using time picker
   Future<void> pickTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -76,35 +73,23 @@ class AddTaskViewModel extends BaseViewModel {
     }
   }
 
-  /// Add task to dummy data
+  /// Add task to Supabase
   Future<void> addTask(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       return;
     }
     setState(ViewState.busy);
     try {
-      final maxId = DummyTasks.dummyTasks.isEmpty
-          ? 0
-          : DummyTasks.dummyTasks
-                .map((task) => task['id'] as int)
-                .reduce((a, b) => a > b ? a : b);
-
-      // Create new task
-      final newTask = {
-        'id': maxId + 1,
-        'title': titleController.text.trim(),
-        'description': descriptionController.text.trim(),
-        'isCompleted': false,
-        'time': timeController.text.trim(),
-        'priority': _selectedPriority,
-      };
-
-      DummyTasks.dummyTasks.add(newTask);
-      debugPrint('✅ Task added: $newTask');
-
+      await _taskService.addTask(
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        time: timeController.text.trim(),
+        priority: _selectedPriority.toJson(), 
+      );
+      debugPrint('Task added to Supabase');
       setState(ViewState.idle);
       if (context.mounted) {
-        context.pop(true); 
+        Navigator.pop(context, true);
       }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,11 +101,14 @@ class AddTaskViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      debugPrint('❌ Error adding task: $e');
+      debugPrint('Error adding task: $e');
       setState(ViewState.idle);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }

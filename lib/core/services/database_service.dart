@@ -20,9 +20,7 @@ class DatabaseService {
           .select()
           .eq('user_id', user.id)
           .order('created_at', ascending: false);
-
       debugPrint('Fetched ${response.length} tasks');
-
       final tasks = (response as List)
           .map((json) => TaskModel.fromJson(json))
           .toList();
@@ -50,11 +48,9 @@ class DatabaseService {
       debugPrint('Adding task to Supabase...');
 
       final user = _supabase.auth.currentUser;
-
       if (user == null) {
         throw Exception('User must be logged in to add tasks');
       }
-
       final response = await _supabase
           .from('tasks')
           .insert({
@@ -82,17 +78,19 @@ class DatabaseService {
   }
 
   /// Update task completion status
-  Future<void> toggleTaskCompletion(TaskModel task) async {
+  Future<void> toggleTaskCompletion(
+    String taskId,
+    bool newCompletionState,
+  ) async {
     try {
-      debugPrint('Toggling task completion: ${task.id}');
+      debugPrint('Updating task completion: $taskId to $newCompletionState');
       await _supabase
           .from('tasks')
-          .update({'is_completed': !task.isCompleted})
-          .eq('id', task.id);
-
-      debugPrint('ask completion toggled');
+          .update({'is_completed': newCompletionState})
+          .eq('id', taskId);
+      debugPrint('Task completion updated to $newCompletionState');
     } on PostgrestException catch (e) {
-      debugPrint('Error toggling task: ${e.message}');
+      debugPrint('Error updating task: ${e.message}');
       rethrow;
     } catch (e) {
       debugPrint('Error: $e');
@@ -125,12 +123,10 @@ class DatabaseService {
   }
 
   /// Delete a task
-  Future<void> deleteTask(String taskId) async {
+ Future<void> deleteTask(String taskId) async {
     try {
       debugPrint('Deleting task: $taskId');
-
       await _supabase.from('tasks').delete().eq('id', taskId);
-
       debugPrint('Task deleted successfully');
     } on PostgrestException catch (e) {
       debugPrint('Error deleting task: ${e.message}');

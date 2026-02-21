@@ -135,7 +135,7 @@ class LoginView extends StatelessWidget {
 
                           30.verticalSpace,
 
-                          // Login button
+                          //Login button
                           Center(
                             child: AnimatedScale(
                               scale: model.buttonScale,
@@ -151,10 +151,10 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                           ),
-
+                          
                           30.verticalSpace,
 
-                          // Divider with "OR"
+                          //Divider
                           AnimatedOpacity(
                             opacity: model.dividerOpacity,
                             duration: const Duration(milliseconds: 400),

@@ -43,9 +43,9 @@ class SplashViewModel extends BaseViewModel {
       // ignore: use_build_context_synchronously
       context.goNamed('home');
     } else {
-       if (kDebugMode) {
-         print('User is not logged in, routing to Onboarding');
-       }
+      if (kDebugMode) {
+        print('User is not logged in, routing to Onboarding');
+      }
       // ignore: use_build_context_synchronously
       context.goNamed('onboarding');
     }

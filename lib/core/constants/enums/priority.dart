@@ -39,7 +39,6 @@ enum Priority {
       case 'high':
         return Priority.high;
       default:
-        // Fallback to medium if unknown value
         return Priority.medium;
     }
   }

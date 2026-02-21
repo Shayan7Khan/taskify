@@ -23,7 +23,7 @@ class HomeViewModel extends BaseViewModel {
   String? get profileImageUrl => _currentUser?.profileImageUrl;
   UserModel? get currentUser => _currentUser;
 
-  // Add this for tracking refresh state
+  //tracking refresh state
   bool _isRefreshing = false;
   bool get isRefreshing => _isRefreshing;
 
@@ -37,7 +37,7 @@ class HomeViewModel extends BaseViewModel {
       final user = _supabase.auth.currentUser;
 
       if (user == null) {
-        debugPrint('❌ No user logged in');
+        debugPrint(' No user logged in');
         return;
       }
 
@@ -50,16 +50,16 @@ class HomeViewModel extends BaseViewModel {
           .maybeSingle();
 
       if (response == null) {
-        debugPrint('⚠️ No profile found for user');
+        debugPrint('No profile found for user');
         return;
       }
 
       _currentUser = UserModel.fromJson(response);
 
-      debugPrint('✅ Profile loaded: ${_currentUser.toString()}');
+      debugPrint('Profile loaded: ${_currentUser.toString()}');
       notifyListeners();
     } catch (e) {
-      debugPrint('❌ Error loading profile: $e');
+      debugPrint('Error loading profile: $e');
     }
   }
 
@@ -72,7 +72,7 @@ class HomeViewModel extends BaseViewModel {
       debugPrint('Loaded ${tasks.length} tasks');
       setState(ViewState.idle);
     } catch (e) {
-      debugPrint('❌ Error loading tasks: $e');
+      debugPrint('Error loading tasks: $e');
 
       setState(ViewState.idle);
       tasks = [];

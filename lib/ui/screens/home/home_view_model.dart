@@ -201,6 +201,4 @@ class HomeViewModel extends BaseViewModel {
       }
     }
   }
-
-  
 }

@@ -15,7 +15,6 @@ class AddTaskView extends StatelessWidget {
       create: (context) => AddTaskViewModel(),
       child: Consumer<AddTaskViewModel>(
         builder: (context, model, child) => Container(
-          // Take 70% of screen height
           height: MediaQuery.of(context).size.height * 0.7,
           padding: EdgeInsets.only(
             left: 24.w,

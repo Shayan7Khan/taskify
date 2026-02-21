@@ -66,7 +66,7 @@ class SignUpViewModel extends BaseViewModel {
   double get bubbleScale => _bubbleScale;
   double get backButtonOpacity => _backButtonOpacity;
   double get headerOpacity => _headerOpacity;
-  double get imagePickerOpacity => _imagePickerOpacity; // Add this
+  double get imagePickerOpacity => _imagePickerOpacity;
   double get nameFieldOpacity => _nameFieldOpacity;
   double get emailFieldOpacity => _emailFieldOpacity;
   double get passwordFieldOpacity => _passwordFieldOpacity;
@@ -78,7 +78,7 @@ class SignUpViewModel extends BaseViewModel {
   double get loginRedirectOpacity => _loginRedirectOpacity;
 
   Offset get headerOffset => _headerOffset;
-  Offset get imagePickerOffset => _imagePickerOffset; // Add this
+  Offset get imagePickerOffset => _imagePickerOffset; 
   Offset get nameFieldOffset => _nameFieldOffset;
   Offset get emailFieldOffset => _emailFieldOffset;
   Offset get passwordFieldOffset => _passwordFieldOffset;
@@ -259,12 +259,10 @@ class SignUpViewModel extends BaseViewModel {
       return AppStrings.invalidPassword;
     }
 
-    // Check for at least one uppercase letter
     if (!value.contains(RegExp(r'[A-Z]'))) {
       return AppStrings.passwordUppercaseRequired;
     }
 
-    // Check for at least one number
     if (!value.contains(RegExp(r'[0-9]'))) {
       return AppStrings.passwordNumberRequired;
     }
@@ -314,13 +312,11 @@ class SignUpViewModel extends BaseViewModel {
           _profileImage!,
           emailController.text.trim(), 
         );
-
         if (imageUrl == null) {
           throw 'Failed to upload profile image';
         }
       }
 
-      // Sign up with auth service
       bool success = await _authService.signUp(
         emailController.text.trim(),
         passwordController.text.trim(),
@@ -346,12 +342,10 @@ class SignUpViewModel extends BaseViewModel {
   }
 
   void signUpWithGoogle() {
-    // TODO: Implement Google Sign-In
     debugPrint('Sign up with ${AppStrings.google}');
   }
 
   void signUpWithApple() {
-    // TODO: Implement Apple Sign-In
     debugPrint('Sign up with ${AppStrings.apple}');
   }
 

@@ -26,7 +26,7 @@ class TaskModel {
   /// Create TaskModel from Supabase JSON
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
-      id: json['id'] as String, // UUID from Supabase
+      id: json['id'] as String, 
       userId: json['user_id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
@@ -48,7 +48,6 @@ class TaskModel {
       'is_completed': isCompleted,
       'time': time,
       'priority': priority.toJson(),
-      // Don't include created_at/updated_at (Supabase auto-manages)
     };
   }
 

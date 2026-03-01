@@ -1,15 +1,15 @@
 import 'package:taskify/core/constants/enums/priority.dart';
 
 class TaskModel {
-  final String id; // Changed from int to String (UUID)
-  final String userId; // New field
+  final String id; 
+  final String userId; 
   final String title;
   final String description;
   bool isCompleted;
   final String time;
   final Priority priority;
-  final DateTime createdAt; // New field
-  final DateTime updatedAt; // New field
+  final DateTime createdAt; 
+  final DateTime updatedAt; 
 
   TaskModel({
     required this.id,

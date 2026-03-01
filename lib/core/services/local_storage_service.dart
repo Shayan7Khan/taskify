@@ -13,7 +13,6 @@ class LocalStorageService {
     required String userId,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-
     await prefs.setString(keyAccessToken, accessToken);
     await prefs.setString(keyRefreshToken, refreshToken);
     await prefs.setString(keyUserId, userId);
@@ -27,7 +26,6 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(keyAccessToken);
   }
-
   // Get user ID
   Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();

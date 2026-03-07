@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums/priority.dart';
 import 'package:taskify/core/constants/enums/view_state.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/services/database_service.dart';
 import 'package:taskify/locator.dart';
 
 class AddTaskViewModel extends BaseViewModel {
-  final DatabaseService _taskService = locator<DatabaseService>(); 
+  final CustomLogger log = CustomLogger(className: 'Add Task View Model');
+  final DatabaseService _taskService = locator<DatabaseService>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -84,9 +86,9 @@ class AddTaskViewModel extends BaseViewModel {
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         time: timeController.text.trim(),
-        priority: _selectedPriority.toJson(), 
+        priority: _selectedPriority.toJson(),
       );
-      debugPrint('Task added to Supabase');
+      log.e('Task added to Supabase');
       setState(ViewState.idle);
       if (context.mounted) {
         Navigator.pop(context, true);
@@ -101,7 +103,7 @@ class AddTaskViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      debugPrint('Error adding task: $e');
+      log.e('Error adding task: $e');
       setState(ViewState.idle);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

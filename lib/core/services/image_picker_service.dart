@@ -1,9 +1,11 @@
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 
 class ImagePickerService {
+  final CustomLogger log = CustomLogger(
+    className: 'Image Picker Service Class',
+  );
   final ImagePicker _picker = ImagePicker();
 
   //pick image from gallery
@@ -15,14 +17,13 @@ class ImagePickerService {
         maxWidth: 1024,
         maxHeight: 1024,
       );
+      log.d('Picked Image from gallery: $image');
 
       if (image != null) {
         return File(image.path);
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error picking image from gallery: $e');
-      }
+      log.e('Error picking image from gallery: $e');
     }
     return null;
   }
@@ -36,14 +37,13 @@ class ImagePickerService {
         maxWidth: 1024,
         maxHeight: 1024,
       );
+      log.d('Picked Image from camera: $image');
 
       if (image != null) {
         return File(image.path);
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error picking image from camera: $e');
-      }
+      log.e('Error picking image from camera: $e');
     }
     return null;
   }

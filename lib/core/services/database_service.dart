@@ -1,18 +1,19 @@
-import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/model/task_model.dart';
 
 class DatabaseService {
+  final CustomLogger log = CustomLogger(className: 'Database Service');
   final _supabase = Supabase.instance.client;
 
   /// Get all tasks for the current user
   Future<List<TaskModel>> getAllTasks() async {
     try {
-      debugPrint('Fetching tasks from Supabase...');
+      log.d('Fetching tasks from Supabase...');
       final user = _supabase.auth.currentUser;
 
       if (user == null) {
-        debugPrint('No user logged in');
+        log.d('No user logged in');
         return [];
       }
       final response = await _supabase
@@ -20,19 +21,19 @@ class DatabaseService {
           .select()
           .eq('user_id', user.id)
           .order('created_at', ascending: false);
-      debugPrint('Fetched ${response.length} tasks');
+      log.d('Fetched ${response.length} tasks');
       final tasks = (response as List)
           .map((json) => TaskModel.fromJson(json))
           .toList();
 
       return tasks;
     } on PostgrestException catch (e) {
-      debugPrint('Database error: ${e.message}');
-      debugPrint('Code: ${e.code}');
-      debugPrint(' Details: ${e.details}');
-      rethrow; 
+      log.d('Database error: ${e.message}');
+      log.d('Code: ${e.code}');
+      log.d(' Details: ${e.details}');
+      rethrow;
     } catch (e) {
-      debugPrint('Unexpected error fetching tasks: $e');
+      log.e('Unexpected error fetching tasks: $e');
       rethrow;
     }
   }
@@ -42,10 +43,10 @@ class DatabaseService {
     required String title,
     required String description,
     required String time,
-    required String priority, 
+    required String priority,
   }) async {
     try {
-      debugPrint('Adding task to Supabase...');
+      log.d('Adding task to Supabase...');
 
       final user = _supabase.auth.currentUser;
       if (user == null) {
@@ -61,18 +62,18 @@ class DatabaseService {
             'priority': priority,
             'is_completed': false,
           })
-          .select() 
-          .single(); 
+          .select()
+          .single();
 
-      debugPrint('Task added successfully');
+      log.d('Task added successfully');
 
       final task = TaskModel.fromJson(response);
       return task;
     } on PostgrestException catch (e) {
-      debugPrint('Database error adding task: ${e.message}');
+      log.e('Database error adding task: ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error adding task: $e');
+      log.e('Error adding task: $e');
       rethrow;
     }
   }
@@ -83,17 +84,17 @@ class DatabaseService {
     bool newCompletionState,
   ) async {
     try {
-      debugPrint('Updating task completion: $taskId to $newCompletionState');
+      log.d('Updating task completion: $taskId to $newCompletionState');
       await _supabase
           .from('tasks')
           .update({'is_completed': newCompletionState})
           .eq('id', taskId);
-      debugPrint('Task completion updated to $newCompletionState');
+      log.d('Task completion updated to $newCompletionState');
     } on PostgrestException catch (e) {
-      debugPrint('Error updating task: ${e.message}');
+      log.e('Error updating task: ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error: $e');
+      log.e('Error: $e');
       rethrow;
     }
   }
@@ -101,7 +102,7 @@ class DatabaseService {
   /// Update a task
   Future<TaskModel> updateTask(TaskModel task) async {
     try {
-      debugPrint('Updating task: ${task.id}');
+      log.d('Updating task: ${task.id}');
 
       final response = await _supabase
           .from('tasks')
@@ -110,29 +111,29 @@ class DatabaseService {
           .select()
           .single();
 
-      debugPrint('Task updated successfully');
+      log.e('Task updated successfully');
 
       return TaskModel.fromJson(response);
     } on PostgrestException catch (e) {
-      debugPrint('Error updating task: ${e.message}');
+      log.d('Error updating task: ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error: $e');
+      log.e('Error: $e');
       rethrow;
     }
   }
 
   /// Delete a task
- Future<void> deleteTask(String taskId) async {
+  Future<void> deleteTask(String taskId) async {
     try {
-      debugPrint('Deleting task: $taskId');
+      log.d('Deleting task: $taskId');
       await _supabase.from('tasks').delete().eq('id', taskId);
-      debugPrint('Task deleted successfully');
+      log.d('Task deleted successfully');
     } on PostgrestException catch (e) {
-      debugPrint('Error deleting task: ${e.message}');
+      log.d('Error deleting task: ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error: $e');
+      log.e('Error: $e');
       rethrow;
     }
   }

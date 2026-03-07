@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums/view_state.dart';
 import 'package:taskify/core/constants/strings/app_strings.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/model/task_model.dart';
 import 'package:taskify/core/model/user_model.dart';
 import 'package:taskify/core/services/auth_service.dart';
@@ -11,6 +12,7 @@ import 'package:taskify/locator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeViewModel extends BaseViewModel {
+  final CustomLogger log = CustomLogger(className: 'Home View Model');
   final AuthService _authService = locator.get<AuthService>();
   final DatabaseService _taskService = locator<DatabaseService>();
   final _supabase = Supabase.instance.client;
@@ -32,16 +34,15 @@ class HomeViewModel extends BaseViewModel {
     getTasks();
   }
 
+  //loading user profile
   Future<void> loadUserProfile() async {
     try {
       final user = _supabase.auth.currentUser;
-
       if (user == null) {
         debugPrint(' No user logged in');
         return;
       }
-
-      debugPrint('🔵 Loading profile for user: ${user.id}');
+      log.d('loading profile for user: ${user.id}');
 
       final response = await _supabase
           .from('profiles')
@@ -50,16 +51,16 @@ class HomeViewModel extends BaseViewModel {
           .maybeSingle();
 
       if (response == null) {
-        debugPrint('No profile found for user');
+        log.w('No profile found for user');
         return;
       }
 
       _currentUser = UserModel.fromJson(response);
 
-      debugPrint('Profile loaded: ${_currentUser.toString()}');
+      log.d('Profile loaded: ${_currentUser.toString()}');
       notifyListeners();
     } catch (e) {
-      debugPrint('Error loading profile: $e');
+      log.e('Error loading profile: $e');
     }
   }
 
@@ -69,10 +70,10 @@ class HomeViewModel extends BaseViewModel {
 
     try {
       tasks = await _taskService.getAllTasks();
-      debugPrint('Loaded ${tasks.length} tasks');
+      log.d('Loaded ${tasks.length} tasks');
       setState(ViewState.idle);
     } catch (e) {
-      debugPrint('Error loading tasks: $e');
+      log.e('Error loading tasks: $e');
 
       setState(ViewState.idle);
       tasks = [];
@@ -81,15 +82,15 @@ class HomeViewModel extends BaseViewModel {
 
   /// Returns Future for RefreshIndicator
   Future<void> onRefresh() async {
-    debugPrint('Pull-to-refresh triggered');
+    log.d('Pull-to-refresh triggered');
     _isRefreshing = true;
     notifyListeners();
 
     try {
       await getTasks();
-      debugPrint('Refresh complete');
+      log.d('Refresh complete');
     } catch (e) {
-      debugPrint('Error during refresh: $e');
+      log.e('Error during refresh: $e');
     } finally {
       _isRefreshing = false;
       notifyListeners();
@@ -98,7 +99,7 @@ class HomeViewModel extends BaseViewModel {
 
   /// Refresh tasks after adding new task
   Future<void> refreshTasks() async {
-    debugPrint('Refreshing tasks after add...');
+    log.d('Refreshing tasks after add...');
     await getTasks();
     notifyListeners();
   }
@@ -108,18 +109,17 @@ class HomeViewModel extends BaseViewModel {
     try {
       task.isCompleted = !task.isCompleted;
       notifyListeners();
-      debugPrint('Toggling task: ${task.id} to ${task.isCompleted}');
+      log.d('Toggling task: ${task.id} to ${task.isCompleted}');
       await _taskService.toggleTaskCompletion(task.id, task.isCompleted);
-      debugPrint('Task toggled successfully');
+      log.d('Task toggled successfully');
     } catch (e) {
-      debugPrint('Error toggling task: $e');
+      log.d('Error toggling task: $e');
       task.isCompleted = originalState;
       notifyListeners();
-
     }
   }
 
-  /// Delete a task 
+  /// Delete a task
   Future<void> deleteTask(BuildContext context, TaskModel task) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -128,11 +128,11 @@ class HomeViewModel extends BaseViewModel {
         content: Text('Are you sure you want to delete "${task.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => context.pop(false),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => context.pop( true),
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
@@ -140,11 +140,11 @@ class HomeViewModel extends BaseViewModel {
     );
     if (confirmed != true) return;
     try {
-      debugPrint('Deleting task: ${task.id}');
+      log.d('Deleting task: ${task.id}');
       await _taskService.deleteTask(task.id);
       tasks.removeWhere((t) => t.id == task.id);
       notifyListeners();
-      debugPrint('Task deleted successfully');
+      log.d('Task deleted successfully');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -160,7 +160,7 @@ class HomeViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      debugPrint(' Error deleting task: $e');
+      log.e(' Error deleting task: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

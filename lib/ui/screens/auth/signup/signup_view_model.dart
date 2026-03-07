@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums/view_state.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/services/auth_service.dart';
 import 'package:taskify/core/services/image_picker_service.dart';
 import 'package:taskify/core/services/supabase_storgae_service.dart';
@@ -13,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 
 class SignUpViewModel extends BaseViewModel {
   final BuildContext context;
+  final CustomLogger log = CustomLogger(className: 'Sign Up View Model');
 
   final AuthService _authService = locator<AuthService>();
   final ImagePickerService _imageService = locator<ImagePickerService>();
@@ -78,7 +80,7 @@ class SignUpViewModel extends BaseViewModel {
   double get loginRedirectOpacity => _loginRedirectOpacity;
 
   Offset get headerOffset => _headerOffset;
-  Offset get imagePickerOffset => _imagePickerOffset; 
+  Offset get imagePickerOffset => _imagePickerOffset;
   Offset get nameFieldOffset => _nameFieldOffset;
   Offset get emailFieldOffset => _emailFieldOffset;
   Offset get passwordFieldOffset => _passwordFieldOffset;
@@ -293,9 +295,9 @@ class SignUpViewModel extends BaseViewModel {
     return true;
   }
 
+  //signup
   Future<void> signUp() async {
     _termsError = null;
-    // Validate form
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -310,8 +312,10 @@ class SignUpViewModel extends BaseViewModel {
       if (_profileImage != null) {
         imageUrl = await _storageService.uploadProfileImage(
           _profileImage!,
-          emailController.text.trim(), 
+          emailController.text.trim(),
         );
+        log.d('ImageUrl = $imageUrl');
+        
         if (imageUrl == null) {
           throw 'Failed to upload profile image';
         }
@@ -326,7 +330,7 @@ class SignUpViewModel extends BaseViewModel {
       setState(ViewState.idle);
       if (!context.mounted) return;
       if (success) {
-        debugPrint(AppStrings.signUpSuccess);
+        log.d(AppStrings.signUpSuccess);
         context.goNamed('home');
       } else {
         throw 'Sign up failed';
@@ -334,7 +338,7 @@ class SignUpViewModel extends BaseViewModel {
     } catch (e) {
       setState(ViewState.idle);
       if (!context.mounted) return;
-      debugPrint('Sign up error: $e');
+      log.e('Sign up error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
       );
@@ -342,11 +346,11 @@ class SignUpViewModel extends BaseViewModel {
   }
 
   void signUpWithGoogle() {
-    debugPrint('Sign up with ${AppStrings.google}');
+    log.d('Sign up with ${AppStrings.google}');
   }
 
   void signUpWithApple() {
-    debugPrint('Sign up with ${AppStrings.apple}');
+    log.d('Sign up with ${AppStrings.apple}');
   }
 
   void goToLogin(BuildContext context) {

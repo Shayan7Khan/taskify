@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 
 class LocalStorageService {
+  final CustomLogger log = CustomLogger(className: 'Local Storage Service');
   final String keyAccessToken = 'access_token';
   final String keyRefreshToken = 'refresh_token';
   final String keyUserId = 'user_id';
@@ -16,9 +17,7 @@ class LocalStorageService {
     await prefs.setString(keyAccessToken, accessToken);
     await prefs.setString(keyRefreshToken, refreshToken);
     await prefs.setString(keyUserId, userId);
-    if (kDebugMode) {
-      print('Session saved successfully. ');
-    }
+      log.d('Session saved successfully. ');
   }
 
   //function to get session token
@@ -26,6 +25,7 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(keyAccessToken);
   }
+
   // Get user ID
   Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,9 +38,7 @@ class LocalStorageService {
     await prefs.remove(keyAccessToken);
     await prefs.remove(keyRefreshToken);
     await prefs.remove(keyUserId);
-    if (kDebugMode) {
-      print('Session cleared!');
-    }
+      log.d('Session cleared!');
   }
 
   //check if user is logged in

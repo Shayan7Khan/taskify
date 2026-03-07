@@ -1,11 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/services/local_storage_service.dart';
 import 'package:taskify/locator.dart';
 
 class SplashViewModel extends BaseViewModel {
+  final CustomLogger log = CustomLogger(className: 'Splash View Model');
   final BuildContext context;
   final LocalStorageService _localStorageService = locator
       .get<LocalStorageService>();
@@ -37,15 +38,12 @@ class SplashViewModel extends BaseViewModel {
   Future<void> checkLoginStatus() async {
     bool isLoggedIn = await _localStorageService.isLoggedIn();
     if (isLoggedIn) {
-      if (kDebugMode) {
-        print('User is logged in, routing to Home');
-      }
+      log.d('User is logged in, routing to Home');
       // ignore: use_build_context_synchronously
       context.goNamed('home');
     } else {
-      if (kDebugMode) {
-        print('User is not logged in, routing to Onboarding');
-      }
+      log.d('User is not logged in, routing to Onboarding');
+
       // ignore: use_build_context_synchronously
       context.goNamed('onboarding');
     }

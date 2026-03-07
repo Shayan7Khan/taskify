@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums/view_state.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/services/auth_service.dart';
 import 'package:taskify/core/constants/strings/app_strings.dart';
 import 'package:taskify/locator.dart';
 
 class LoginViewModel extends BaseViewModel {
+  final CustomLogger log = CustomLogger(className: 'Login View Model');
   final BuildContext context;
 
   final AuthService _authService = locator<AuthService>();
@@ -157,10 +159,10 @@ class LoginViewModel extends BaseViewModel {
     setState(ViewState.idle);
     if (!context.mounted) return;
     if (success) {
-      debugPrint(AppStrings.loginSuccess);
+      log.d(AppStrings.loginSuccess);
       context.goNamed('home');
     } else {
-      debugPrint('Login failed');
+      log.d('Login failed');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(AppStrings.loginError),
@@ -172,23 +174,23 @@ class LoginViewModel extends BaseViewModel {
 
   void loginWithGoogle() {
     // TODO: Implement Google Sign-In
-    debugPrint('Login with ${AppStrings.google}');
+    log.d('Login with ${AppStrings.google}');
   }
 
   void loginWithApple() {
     // TODO: Implement Apple Sign-In
-    debugPrint('Login with ${AppStrings.apple}');
+    log.d('Login with ${AppStrings.apple}');
   }
 
   void goToForgotPassword() {
     // TODO: Navigate to forgot password screen
     // context.goNamed('forgot-password');
-    debugPrint('Navigate to Forgot Password');
+    log.d('Navigate to Forgot Password');
   }
 
   void goToSignUp(BuildContext context) {
     context.goNamed('signup');
-    debugPrint('Navigate to Sign Up');
+    log.d('Navigate to Sign Up');
   }
 
   @override

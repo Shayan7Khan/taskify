@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
-import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/constants/enums/view_state.dart';
 import 'package:taskify/core/dummy_tasks.dart';
 
 class AddTaskViewModel extends BaseViewModel {

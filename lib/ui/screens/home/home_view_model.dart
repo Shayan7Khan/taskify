@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
-import 'package:taskify/core/constants/enums.dart';
+import 'package:taskify/core/constants/enums/view_state.dart';
 import 'package:taskify/core/dummy_tasks.dart';
 import 'package:taskify/core/model/task_model.dart';
 import 'package:taskify/core/model/user_model.dart';
 import 'package:taskify/core/services/auth_service.dart';
-import 'package:taskify/core/strings/app_strings.dart';
+import 'package:taskify/core/constants/strings/app_strings.dart';
 import 'package:taskify/locator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

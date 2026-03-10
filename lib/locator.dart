@@ -9,8 +9,8 @@ GetIt locator = GetIt.instance;
 
 setupLocator() async {
   locator.registerSingleton(LocalStorageService());
+  locator.registerSingleton(DatabaseService());
   locator.registerSingleton(AuthService());
   locator.registerSingleton(ImagePickerService());
   locator.registerSingleton(SupabaseStorgaeService());
-  locator.registerSingleton(DatabaseService());
 }

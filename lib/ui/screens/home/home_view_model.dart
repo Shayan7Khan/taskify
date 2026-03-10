@@ -104,6 +104,7 @@ class HomeViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  // flip the task from complete to incomplete and vice versa
   Future<void> toggleIsCompleted(TaskModel task) async {
     final originalState = task.isCompleted;
     try {
@@ -132,7 +133,7 @@ class HomeViewModel extends BaseViewModel {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => context.pop( true),
+            onPressed: () => context.pop(true),
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],

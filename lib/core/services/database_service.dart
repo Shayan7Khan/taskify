@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/core/logge_customizations/custom_logger.dart';
 import 'package:taskify/core/model/task_model.dart';
@@ -11,7 +12,6 @@ class DatabaseService {
     try {
       log.d('Fetching tasks from Supabase...');
       final user = _supabase.auth.currentUser;
-
       if (user == null) {
         log.d('No user logged in');
         return [];
@@ -25,7 +25,6 @@ class DatabaseService {
       final tasks = (response as List)
           .map((json) => TaskModel.fromJson(json))
           .toList();
-
       return tasks;
     } on PostgrestException catch (e) {
       log.d('Database error: ${e.message}');
@@ -47,7 +46,6 @@ class DatabaseService {
   }) async {
     try {
       log.d('Adding task to Supabase...');
-
       final user = _supabase.auth.currentUser;
       if (user == null) {
         throw Exception('User must be logged in to add tasks');
@@ -64,9 +62,7 @@ class DatabaseService {
           })
           .select()
           .single();
-
       log.d('Task added successfully');
-
       final task = TaskModel.fromJson(response);
       return task;
     } on PostgrestException catch (e) {
@@ -103,16 +99,13 @@ class DatabaseService {
   Future<TaskModel> updateTask(TaskModel task) async {
     try {
       log.d('Updating task: ${task.id}');
-
       final response = await _supabase
           .from('tasks')
           .update(task.toJson())
           .eq('id', task.id)
           .select()
           .single();
-
       log.e('Task updated successfully');
-
       return TaskModel.fromJson(response);
     } on PostgrestException catch (e) {
       log.d('Error updating task: ${e.message}');
@@ -135,6 +128,32 @@ class DatabaseService {
     } catch (e) {
       log.e('Error: $e');
       rethrow;
+    }
+  }
+
+  /// Save Fcm Token
+  Future<void> saveDeviceToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      log.d('FCM Token: $token');
+
+      if (token == null) {
+        log.d('No FCM token recieved');
+      }
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        log.d('No user logged in');
+        return;
+      }
+      await _supabase.from('user_devices').upsert({
+        'user_id': user.id,
+        'fcm_token': token,
+      }, onConflict: 'fcm_token');
+    } on PostgrestException catch (e) {
+      log.e('Error saving device token: ${e.message}');
+      rethrow;
+    } catch (e) {
+      log.e('Unexpected error saving token: $e');
     }
   }
 }

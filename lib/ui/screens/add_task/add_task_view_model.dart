@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:taskify/core/base_class/base_view_model.dart';
 import 'package:taskify/core/constants/enums/priority.dart';
 import 'package:taskify/core/constants/enums/view_state.dart';
@@ -53,6 +54,8 @@ class AddTaskViewModel extends BaseViewModel {
     return null;
   }
 
+
+ //pick time  
   Future<void> pickTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -75,6 +78,8 @@ class AddTaskViewModel extends BaseViewModel {
     }
   }
 
+
+
   /// Add task to Supabase
   Future<void> addTask(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
@@ -91,7 +96,7 @@ class AddTaskViewModel extends BaseViewModel {
       log.e('Task added to Supabase');
       setState(ViewState.idle);
       if (context.mounted) {
-        Navigator.pop(context, true);
+        context.pop(true);
       }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

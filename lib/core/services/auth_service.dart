@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:taskify/core/logge_customizations/custom_logger.dart';
+import 'package:taskify/core/services/database_service.dart';
 import 'package:taskify/core/services/local_storage_service.dart';
 import 'package:taskify/locator.dart';
 
 class AuthService {
+  final CustomLogger log = CustomLogger(className: 'AuthService');
   final supabase = Supabase.instance.client;
+  final DatabaseService _databaseService = locator.get<DatabaseService>();
   final LocalStorageService _localStorageService = locator
       .get<LocalStorageService>();
 
@@ -19,55 +23,35 @@ class AuthService {
       if (kDebugMode) {
         print('Starting signup for: $email');
       }
-
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
       );
-
       if (response.user == null) {
-        if (kDebugMode) {
-          print('Signup failed - no user created');
-        }
+        log.d('Signup failed - no user created');
         return false;
       }
-
       final userId = response.user!.id;
-      if (kDebugMode) {
-        print('Auth user created with ID: $userId');
-      }
-
-      if (kDebugMode) {
-        print('Inserting profile into database...');
-      }
-
+      log.d('Auth user created with ID: $userId');
+      log.d('Inserting profile into database...');
       await supabase.from('profiles').insert({
         'id': userId,
         'email': email,
         'name': name,
         'profile_image_url': imageUrl,
       });
-
-      if (kDebugMode) {
-        print('Profile inserted successfully');
-      }
-
+      log.d('Profile inserted successfully');
       if (response.session != null) {
         await _localStorageService.saveSession(
           accessToken: response.session!.accessToken,
           refreshToken: response.session!.refreshToken!,
           userId: response.user!.id,
         );
-        if (kDebugMode) {
-          print('User saved locally by signup');
-        }
+        log.d('User saved locally by signup');
+        await _databaseService.saveDeviceToken();
         return true;
       } else {
-        if (kDebugMode) {
-          print(
-          'Signup succeeded but no session (email confirmation needed?)',
-        );
-        }
+        log.d('Signup succeeded but no session (email confirmation needed?)');
         return false;
       }
     } on AuthException catch (e) {
@@ -76,20 +60,12 @@ class AuthService {
       }
       return false;
     } on PostgrestException catch (e) {
-      if (kDebugMode) {
-        print('Database error: ${e.message}');
-      }
-      if (kDebugMode) {
-        print('   Code: ${e.code}');
-      }
-      if (kDebugMode) {
-        print('   Details: ${e.details}');
-      }
+      log.d('Database error: ${e.message}');
+      log.d('Code: ${e.code}');
+      log.d('Details: ${e.details}');
       return false;
     } catch (e) {
-      if (kDebugMode) {
-        print('Unexpected signup error: $e');
-      }
+      log.e('Unexpected signup error: $e');
       return false;
     }
   }
@@ -100,32 +76,25 @@ class AuthService {
       if (kDebugMode) {
         print(' Attempting login...');
       }
-
       final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
-
       if (response.user != null && response.session != null) {
         await _localStorageService.saveSession(
           accessToken: response.session!.accessToken,
           refreshToken: response.session!.refreshToken!,
           userId: response.user!.id,
         );
-        if (kDebugMode) {
-          print('User saved locally by login.');
-        }
+        log.d('User saved locally by login.');
+        await _databaseService.saveDeviceToken();
         return true;
       } else {
-        if (kDebugMode) {
-          print('No user or session in response');
-        }
+        log.d('No user or session in response');
         return false;
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Login error: $e');
-      }
+      log.e('Login error: $e');
       return false;
     }
   }

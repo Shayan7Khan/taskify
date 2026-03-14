@@ -97,9 +97,7 @@ class AddTaskView extends StatelessWidget {
                     ),
                     onTap: () => model.pickTime(context),
                   ),
-
                   20.verticalSpace,
-
                   // Priority label
                   Text(
                     'Priority',
@@ -109,9 +107,7 @@ class AddTaskView extends StatelessWidget {
                       color: Colors.grey[800],
                     ),
                   ),
-
                   10.verticalSpace,
-
                   // Priority selection
                   Row(
                     children: model.priorities.map((priority) {
@@ -125,19 +121,21 @@ class AddTaskView extends StatelessWidget {
                               padding: EdgeInsets.symmetric(vertical: 12.h),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? _getPriorityColor(priority)
+                                    ? priority
+                                          .color 
                                     : Colors.grey[200],
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
                                   color: isSelected
-                                      ? _getPriorityColor(priority)
+                                      ? priority.color
                                       : Colors.grey[300]!,
                                   width: 2,
                                 ),
                               ),
                               child: Center(
                                 child: Text(
-                                  priority.toUpperCase(),
+                                  priority.displayName
+                                      .toUpperCase(), 
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
@@ -153,9 +151,7 @@ class AddTaskView extends StatelessWidget {
                       );
                     }).toList(),
                   ),
-
                   30.verticalSpace,
-
                   // Add task button
                   Center(
                     child: CustomElevatedButton(
@@ -167,7 +163,6 @@ class AddTaskView extends StatelessWidget {
                           : () => model.addTask(context),
                     ),
                   ),
-
                   10.verticalSpace,
                 ],
               ),
@@ -176,18 +171,5 @@ class AddTaskView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getPriorityColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case 'high':
-        return Colors.red;
-      case 'medium':
-        return Colors.orange;
-      case 'low':
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:taskify/core/services/auth_service.dart';
+import 'package:taskify/core/services/database_service.dart';
 import 'package:taskify/core/services/image_picker_service.dart';
 import 'package:taskify/core/services/local_storage_service.dart';
 import 'package:taskify/core/services/supabase_storgae_service.dart';
@@ -11,4 +12,5 @@ setupLocator() async {
   locator.registerSingleton(AuthService());
   locator.registerSingleton(ImagePickerService());
   locator.registerSingleton(SupabaseStorgaeService());
+  locator.registerSingleton(DatabaseService());
 }

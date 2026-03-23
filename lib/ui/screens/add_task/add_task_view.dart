@@ -25,7 +25,7 @@ class AddTaskView extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
           child: SingleChildScrollView(
-            //main content
+            //main content fields
             child: AddTaskFields(model: model),
           ),
         ),
